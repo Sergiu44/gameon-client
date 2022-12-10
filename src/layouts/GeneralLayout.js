@@ -1,12 +1,13 @@
 import React from 'react';
 import {Outlet} from "react-router-dom";
+import GeneralDashboard from "../components/dashboards/GeneralDashboard";
 
 const GeneralLayout = (props) => {
     return (
-        <>
-        General layout
+        <div className="flex">
+            <GeneralDashboard />
             <Outlet />
-        </>
+        </div>
     )
 }
 

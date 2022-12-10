@@ -6,13 +6,15 @@ import MainLayout from "./layouts/MainLayout";
 import MainScreen from "./screens/main/MainScreen";
 import LoginScreen from "./screens/main/LoginScreen";
 import RegisterScreen from "./screens/main/RegisterScreen";
-import HomeScreen from "./screens/general/HomeScreen";
 import GeneralLayout from "./layouts/GeneralLayout";
 import ProfileScreen from "./screens/general/ProfileScreen";
-import GameListingPageScreen from "./screens/game/GameListingPageScreen";
 import WishlistScreen from "./screens/general/WishlistScreen";
 import CartScreen from "./screens/general/CartScreen";
-import GameDetailsPageScreen from "./screens/game/GameDetailsPageScreen";
+import ListingPageScreen from "./screens/products/ListingPageScreen";
+
+function SettingScreen() {
+    return null;
+}
 
 const router = createBrowserRouter([
     {
@@ -39,10 +41,6 @@ const router = createBrowserRouter([
         // errorElement: <ErrorPage />
         children: [
             {
-                path: '/home',
-                element: <HomeScreen />
-            },
-            {
                 path: '/profile',
                 element: <ProfileScreen />
             },
@@ -51,17 +49,29 @@ const router = createBrowserRouter([
                 element: <WishlistScreen />
             },
             {
-                path: '/cart',
+                path: '/basket',
                 element: <CartScreen />
             },
             {
-                path: '/game-listing',
-                element: <GameListingPageScreen />
+                path: '/settings',
+                element: <SettingScreen />
             },
             {
-                path: '/game-listing/:gameId',
-                element: <GameDetailsPageScreen />,
+                path: '/game-listing',
+                element: <ListingPageScreen hasPagination />
             },
+            // {
+            //     path: '/game-listing/:gameId',
+            //     element: <GameDetailsPageScreen />,
+            // },
+            {
+                path: '/bundle-listing',
+                element: <ListingPageScreen />
+            },
+            // {
+            //     path: '/bundle-listing/:bundleId',
+            //     element: <BundleDetailsPageScreen />
+            // }
         ]
     },
 ])
