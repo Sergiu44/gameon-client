@@ -11,6 +11,7 @@ const RegisterScreen = (props) => {
                 className="max-w-screen-md p-6 bg-white border border-gray-200 rounded-lg shadow-md mx-auto">
                 <h1 className="mb-20 text-xl font-extrabold tracking-tight text-gray-900 md:text-2xl lg:text-3xl text-center mt-6 mx-5">Log in first so that we can start the journey!</h1>
 
+                <h1 className="text-xl font-bold">Progress {step}/2</h1>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mb-5">
                     <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: 50*step + "%"}}></div>
                 </div>

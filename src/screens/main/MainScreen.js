@@ -1,5 +1,6 @@
 import React from 'react';
-import {Outlet} from "react-router-dom";
+import {Link, Outlet} from "react-router-dom";
+import GeneralCarousel from "../../components/carousels/GeneralCarousel";
 
 const MainScreen = (props) => {
     return (
@@ -7,9 +8,9 @@ const MainScreen = (props) => {
             <div className="max-w-7xl mx-auto">
                 <section className="bg-white dark:bg-gray-900">
                     <div
-                        className="gap-8 items-center py-8 px-4 mx-auto max-w-screen-xl xl:gap-16 md:grid md:grid-cols-2 sm:py-16 lg:px-6">
+                        className="gap-8 items-center mx-auto w-full xl:gap-16 md:grid md:grid-cols-2">
                         <img className="w-full dark:hidden"
-                             src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/cta/cta-dashboard-mockup.svg"
+                             src="https://media.istockphoto.com/id/1334436084/photo/top-down-view-of-colorful-illuminated-gaming-accessories-laying-on-table.jpg?s=612x612&w=0&k=20&c=E9xnbAZoBS5LlUX0q-zxT_3m6gEZpyB2k51_U4LLMNs="
                              alt="dashboard image" />
                         <img className="w-full hidden dark:block"
                              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/cta/cta-dashboard-mockup-dark.svg"
@@ -21,7 +22,7 @@ const MainScreen = (props) => {
                                 helps you connect with friends and communities of people who share your interests.
                                 Connecting with your friends and family as well as discovering new ones is easy with
                                 features like Groups.</p>
-                            <a href="#"
+                            <Link to="/register"
                                className="inline-flex items-center text-white bg-cyan-800 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-primary-900">
                                 Get started
                                 <svg className="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -30,11 +31,12 @@ const MainScreen = (props) => {
                                           d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                                           clip-rule="evenodd"></path>
                                 </svg>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </section>
             </div>
+            <GeneralCarousel />
         </div>
     )
 }

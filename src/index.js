@@ -9,12 +9,9 @@ import RegisterScreen from "./screens/main/RegisterScreen";
 import GeneralLayout from "./layouts/GeneralLayout";
 import ProfileScreen from "./screens/general/ProfileScreen";
 import WishlistScreen from "./screens/general/WishlistScreen";
-import CartScreen from "./screens/general/CartScreen";
+import BasketScreen from "./screens/general/BasketScreen";
 import ListingPageScreen from "./screens/products/ListingPageScreen";
-
-function SettingScreen() {
-    return null;
-}
+import SettingsScreen from "./screens/general/SettingsScreen";
 
 const router = createBrowserRouter([
     {
@@ -50,11 +47,11 @@ const router = createBrowserRouter([
             },
             {
                 path: '/basket',
-                element: <CartScreen />
+                element: <BasketScreen />
             },
             {
                 path: '/settings',
-                element: <SettingScreen />
+                element: <SettingsScreen />
             },
             {
                 path: '/game-listing',
