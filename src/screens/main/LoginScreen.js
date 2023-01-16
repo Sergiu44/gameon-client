@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LoginScreen = (props) => {
-  const router = useNavigation();
+  const router = useNavigate();
+  const [error, setError] = useState(false);
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -12,11 +13,18 @@ const LoginScreen = (props) => {
     e.preventDefault();
     axios
       .post("https://localhost:7114/User/login", credentials)
-      .then((token, expiration, firstName, lastName) => {
-        sessionStorage.setItem("token", token);
-        sessionStorage.setItem("expiration", expiration);
-        sessionStorage.setItem("firstName", firstName);
-        sessionStorage.setItem("lastName", lastName);
+      .then(({ data }) => {
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("expiration", data.expiration);
+        sessionStorage.setItem("firstName", data.firstName);
+        sessionStorage.setItem("lastName", data.lastName);
+        if (data.token) {
+          router("/profile");
+        }
+      })
+      .catch((err) => {
+        console.error(err.message);
+        setError(true);
       });
   };
   return (
@@ -30,6 +38,11 @@ const LoginScreen = (props) => {
           Here at GameOn we focus on your demands, your preferences so that this
           gaming experience will be as enjoyable as possible.
         </p>
+        {error && (
+          <p className="bg-red-200 text-red-900 p-2 rounded rounded-lg mb-2">
+            You credentials are not good!
+          </p>
+        )}
         <form onSubmit={handleSubmitForm}>
           <div className="mb-6">
             <label
@@ -40,6 +53,7 @@ const LoginScreen = (props) => {
             </label>
             <input
               onChange={(e) => {
+                setError(false);
                 const { id, value } = e.target;
                 setCredentials({ ...credentials, [id]: value });
               }}
@@ -60,6 +74,7 @@ const LoginScreen = (props) => {
             </label>
             <input
               onChange={(e) => {
+                setError(false);
                 const { id, value } = e.target;
                 setCredentials({ ...credentials, [id]: value });
               }}
