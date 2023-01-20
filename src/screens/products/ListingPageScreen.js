@@ -111,6 +111,7 @@ const ListingPageScreen = (props) => {
           Add {props.hasGames ? "Game" : "Bundle"}
         </button>
         <GeneralTable
+          hasGames={props.hasGames}
           items={products.filter((product) => product.price <= priceValue)}
         />
         {props.hasPagination && <GeneralPagination />}

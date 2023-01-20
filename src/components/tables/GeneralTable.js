@@ -21,7 +21,9 @@ const GeneralTable = (props) => {
               </div>
               <img
                 className="w-full p-6"
-                src="https://v1.tailwindcss.com/img/card-top.jpg"
+                src={`https://localhost:7114/${
+                  props.hasGames ? "Game/image" : "Bundle/image"
+                }/${item.id}`}
                 alt="Sunset in the mountains"
               />
               <div className="px-6 py-4">

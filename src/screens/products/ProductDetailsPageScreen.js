@@ -1,8 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Select from "../../components/elements/Select";
+import useAuth from "../../hooks/useAuth";
 
 const ProductDetailsPage = (props) => {
+  const token = useAuth();
   const [selectedVariant, setSelectedVariant] = useState({
     title: "",
     description: "",
@@ -19,6 +21,8 @@ const ProductDetailsPage = (props) => {
     gameVariants: [],
   });
 
+  console.log(token);
+
   const id = parseInt(window.location.href.split("/").at(-1));
 
   useEffect(() => {
@@ -31,11 +35,36 @@ const ProductDetailsPage = (props) => {
         )
         .then(({ data }) => {
           setProduct(data);
-          setSelectedVariant(data.gameVaraints[0] || data);
+          setSelectedVariant(data);
         });
     };
     getData();
-  }, []);
+  }, [id, props.isBundle]);
+
+  const handleAddBasket = () => {
+    console.log(selectedVariant, product, "prod");
+    if (selectedVariant.title !== product.title) {
+      axios.post(
+        "https://localhost:7114/Basket/post/" + selectedVariant.id,
+        [],
+        {
+          headers: token,
+        }
+      );
+    }
+  };
+
+  const handleAddWishlist = () => {
+    if (selectedVariant.id !== product.id) {
+      axios.post(
+        "https://localhost:7114/Wishlist/post/" + selectedVariant.id,
+        {},
+        {
+          headers: token,
+        }
+      );
+    }
+  };
 
   return (
     <section class="text-gray-700 body-font overflow-hidden bg-white">
@@ -44,7 +73,10 @@ const ProductDetailsPage = (props) => {
           <img
             alt="ecommerce"
             class="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200"
-            src="https://www.whitmorerarebooks.com/pictures/medium/2465.jpg"
+            src={
+              selectedVariant.id &&
+              `https://localhost:7114/Game/image/${selectedVariant.id}`
+            }
           />
           <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
             <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">
@@ -152,24 +184,42 @@ const ProductDetailsPage = (props) => {
             </p>
             <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
               <Select
+                active
                 options={product.gameVariants.map((variant) => ({
                   id: variant.id,
                   value: variant.title,
                 }))}
-                onChange={(e) => console.log(e)}
+                onChange={(e) => {
+                  const variant = product.gameVariants.find(
+                    (gv) =>
+                      gv.id == e.target.options[e.target.selectedIndex].value
+                  );
+                  if (variant) {
+                    setSelectedVariant(variant);
+                  } else {
+                    setSelectedVariant(product);
+                  }
+                }}
               />
             </div>
             <div class="flex">
-              <span class="title-font font-medium text-2xl text-gray-900">
-                {selectedVariant.price || product.price || ""}
+              <span class="mr-4 title-font font-medium text-2xl text-gray-900">
+                {selectedVariant.price || product.price || ""}$
               </span>
+              <span className="title-font text-2xl">rrp:</span>
               <span class="title-font font-medium text-2xl text-gray-900 line-through">
-                {selectedVariant.rrp || product.rrp || ""}
+                {selectedVariant.rrp || product.rrp || ""}$
               </span>
-              <button class="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded">
+              <button
+                class="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
+                onClick={handleAddBasket}
+              >
                 Add to basket
               </button>
-              <button class="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
+              <button
+                class="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4"
+                onClick={handleAddWishlist}
+              >
                 <svg
                   fill="currentColor"
                   stroke-linecap="round"

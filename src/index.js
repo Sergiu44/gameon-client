@@ -13,6 +13,7 @@ import BasketScreen from "./screens/general/BasketScreen";
 import ListingPageScreen from "./screens/products/ListingPageScreen";
 import SettingsScreen from "./screens/general/SettingsScreen";
 import ProductDetailsPage from "./screens/products/ProductDetailsPageScreen";
+import UsersScreen from "./screens/general/UsersScreen";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "/settings",
         element: <SettingsScreen />,
+      },
+      {
+        path: "/users",
+        element: <UsersScreen />,
       },
       {
         path: "/game-listing",
