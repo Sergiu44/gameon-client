@@ -11,6 +11,7 @@ const MainHeader = () => {
     sessionStorage.removeItem("lastName");
     sessionStorage.removeItem("expiration");
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("isAdmin");
     navigate(0);
   };
   return (

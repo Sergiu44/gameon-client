@@ -1,10 +1,15 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Select from "../../components/elements/Select";
 import useAuth from "../../hooks/useAuth";
-
+import FileInput from "../../components/elements/FileInput";
+import useIsAdmin from "../../hooks/useIsAdmin";
 const ProductDetailsPage = (props) => {
+  const [form, setForm] = useState({});
+  const navigate = useNavigate();
   const token = useAuth();
+  const isAdmin = useIsAdmin();
   const [selectedVariant, setSelectedVariant] = useState({
     title: "",
     description: "",
@@ -20,8 +25,6 @@ const ProductDetailsPage = (props) => {
     image: "",
     gameVariants: [],
   });
-
-  console.log(token);
 
   const id = parseInt(window.location.href.split("/").at(-1));
 
@@ -42,28 +45,60 @@ const ProductDetailsPage = (props) => {
   }, [id, props.isBundle]);
 
   const handleAddBasket = () => {
-    console.log(selectedVariant, product, "prod");
-    if (selectedVariant.title !== product.title) {
+    if (selectedVariant.title !== product.title || props.isBundle) {
       axios.post(
-        "https://localhost:7114/Basket/post/" + selectedVariant.id,
+        `https://localhost:7114/Basket/post/${
+          props.isBundle
+            ? "bundle/" + product.id
+            : "variant/" + selectedVariant.id
+        }`,
         [],
         {
           headers: token,
         }
       );
+      navigate("/game-listing");
     }
   };
 
+  const handleDeleteItem = () => {
+    axios.delete(
+      `https://localhost:7114/${props.isBundle ? "Bundle" : "Game"}/delete/` +
+        product.id,
+      [],
+      {
+        headers: token,
+      }
+    );
+    navigate("/game-listing");
+  };
+
   const handleAddWishlist = () => {
-    if (selectedVariant.id !== product.id) {
+    if (selectedVariant.title !== product.title || props.isBundle) {
       axios.post(
-        "https://localhost:7114/Wishlist/post/" + selectedVariant.id,
-        {},
+        `https://localhost:7114/Wishlist/post/${
+          props.isBundle
+            ? "bundle/" + product.id
+            : "variant/" + selectedVariant.id
+        }`,
+        [],
         {
           headers: token,
         }
       );
+      navigate("/game-listing");
     }
+  };
+
+  const handleSubmitVariant = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("GameId", product.id);
+    for (const [key, value] of Object.entries(form)) {
+      formData.append(key, value);
+      form[key] = "";
+    }
+    axios.post("https://localhost:7114/GameVariant/post", formData);
   };
 
   return (
@@ -73,10 +108,19 @@ const ProductDetailsPage = (props) => {
           <img
             alt="ecommerce"
             class="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200"
-            src={
-              selectedVariant.id &&
-              `https://localhost:7114/Game/image/${selectedVariant.id}`
-            }
+            src={`https://localhost:7114/${
+              selectedVariant.id === product.id ? "Game" : "GameVariant"
+            }/image/${selectedVariant.id}`}
+            onMouseEnter={(e) => {
+              e.target.src = `https://localhost:7114/${
+                selectedVariant.id === product.id ? "Game" : "GameVariant"
+              }/hoverImage/${selectedVariant.id}`;
+            }}
+            onMouseLeave={(e) => {
+              e.target.src = `https://localhost:7114/${
+                selectedVariant.id === product.id ? "Game" : "GameVariant"
+              }/image/${selectedVariant.id}`;
+            }}
           />
           <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
             <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">
@@ -190,10 +234,12 @@ const ProductDetailsPage = (props) => {
                   value: variant.title,
                 }))}
                 onChange={(e) => {
-                  const variant = product.gameVariants.find(
-                    (gv) =>
-                      gv.id == e.target.options[e.target.selectedIndex].value
-                  );
+                  const variant = product.gameVariants.find((gv) => {
+                    return (
+                      gv.id ===
+                      parseInt(e.target.options[e.target.selectedIndex].value)
+                    );
+                  });
                   if (variant) {
                     setSelectedVariant(variant);
                   } else {
@@ -232,7 +278,182 @@ const ProductDetailsPage = (props) => {
                 </svg>
               </button>
             </div>
+            {isAdmin && (
+              <button
+                class="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded mt-2"
+                onClick={handleDeleteItem}
+              >
+                Delete item
+              </button>
+            )}
           </div>
+          {isAdmin && (
+            <div className="mt-8">
+              <h2 className="text-3xl text-bold mb-4">
+                Add variant for {product.title}
+              </h2>
+              <form onSubmit={handleSubmitVariant}>
+                <div class="form-group mb-6 flex items-center">
+                  <label for="Title" class="form-label mr-2 text-gray-700">
+                    Title
+                  </label>
+                  <input
+                    value={form.Title}
+                    type="text"
+                    class="form-control
+            block
+            w-full
+            px-3
+            py-1.5
+            text-base
+            font-normal
+            text-gray-700
+            bg-white bg-clip-padding
+            border border-solid border-gray-300
+            rounded
+            transition
+            ease-in-out
+            m-0
+            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="Title"
+                    aria-describedby="title"
+                    placeholder="Enter title for game"
+                    onChange={(e) =>
+                      setForm((prevForm) => ({
+                        ...prevForm,
+                        Title: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <div class="form-group mb-6 flex items-center">
+                  <label
+                    for="Description"
+                    class="form-label mr-2 text-gray-700"
+                  >
+                    Description
+                  </label>
+                  <input
+                    value={form.Description}
+                    type="text"
+                    class="form-control block
+            w-full
+            px-3
+            py-1.5
+            text-base
+            font-normal
+            text-gray-700
+            bg-white bg-clip-padding
+            border border-solid border-gray-300
+            rounded
+            transition
+            ease-in-out
+            m-0
+            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="Description"
+                    placeholder="Description"
+                    onChange={(e) =>
+                      setForm((prevForm) => ({
+                        ...prevForm,
+                        Description: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <FileInput
+                  value={form.Image}
+                  id={"Image"}
+                  label={"* Select Image for game"}
+                  onChange={(file) =>
+                    setForm((prevForm) => ({ ...prevForm, Image: file }))
+                  }
+                />
+                <FileInput
+                  value={form.HoverImage}
+                  id={"HoverImage"}
+                  label={"Select HoverImage for game"}
+                  onChange={(file) =>
+                    setForm((prevForm) => ({
+                      ...prevForm,
+                      HoverImage: file,
+                    }))
+                  }
+                />
+                <div class="form-group mb-6 flex items-center">
+                  <label for="Price" class="form-label mr-2 text-gray-700">
+                    Price
+                  </label>
+                  <input
+                    value={form.Price}
+                    type="number"
+                    class="form-control
+            block
+            w-full
+            px-3
+            py-1.5
+            text-base
+            font-normal
+            text-gray-700
+            bg-white bg-clip-padding
+            border border-solid border-gray-300
+            rounded
+            transition
+            ease-in-out
+            m-0
+            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="Price"
+                    aria-describedby="price"
+                    placeholder="Price"
+                    onChange={(e) =>
+                      setForm((prevForm) => ({
+                        ...prevForm,
+                        Price: parseInt(e.target.value, 10),
+                      }))
+                    }
+                  />
+                </div>
+                <div class="form-group mb-6 flex items-center">
+                  <label for="Rrp" class="form-label mr-2 text-gray-700">
+                    Rrp
+                  </label>
+                  <input
+                    value={form.Rrp}
+                    type="number"
+                    class="form-control
+            block
+            w-full
+            px-3
+            py-1.5
+            text-base
+            font-normal
+            text-gray-700
+            bg-white bg-clip-padding
+            border border-solid border-gray-300
+            rounded
+            transition
+            ease-in-out
+            m-0
+            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    id="Rrp"
+                    aria-describedby="rrp"
+                    placeholder="Rrp"
+                    onChange={(e) =>
+                      setForm((prevForm) => ({
+                        ...prevForm,
+                        Rrp: parseInt(e.target.value),
+                      }))
+                    }
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Add form
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </section>

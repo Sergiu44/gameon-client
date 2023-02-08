@@ -19,7 +19,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-    // errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -37,7 +36,6 @@ const router = createBrowserRouter([
   },
   {
     element: <GeneralLayout />,
-    // errorElement: <ErrorPage />
     children: [
       {
         path: "/profile",
@@ -61,7 +59,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/game-listing",
-        element: <ListingPageScreen hasGames />,
+        element: <ListingPageScreen hasGames={true} />,
       },
       {
         path: "/game-listing/:gameId",
@@ -69,7 +67,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/bundle-listing",
-        element: <ListingPageScreen />,
+        element: <ListingPageScreen hasGames={false} />,
       },
       {
         path: "/bundle-listing/:bundleId",

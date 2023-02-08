@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import GeneralContainer from "../../components/containers/GeneralContainer";
-import BasketTable from "../../components/tables/BasketTable";
+import Table from "../../components/tables/Table";
 import useAuth from "../../hooks/useAuth";
 
 const BasketScreen = (props) => {
@@ -19,7 +19,6 @@ const BasketScreen = (props) => {
     getData();
   }, []);
 
-  console.log(basketItems, "items");
   return (
     <GeneralContainer className="mt-24">
       <h1 className="text-black text-4xl font-extrabold font-mono">
@@ -27,7 +26,7 @@ const BasketScreen = (props) => {
       </h1>
       {basketItems.length ? (
         <>
-          <BasketTable items={basketItems} />
+          <Table items={basketItems} />
         </>
       ) : (
         <div className="flex mx-auto flex-col items-center mt-44">

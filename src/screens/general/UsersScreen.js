@@ -2,15 +2,19 @@ import axios from "axios";
 import GeneralContainer from "../../components/containers/GeneralContainer";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const UsersScreen = (props) => {
+  const token = useAuth();
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     const getUsers = () => {
       axios
-        .get("https://localhost:7114/User/get")
+        .get("https://localhost:7114/User/get", {
+          headers: token,
+        })
         .then(({ data }) => {
           setUsers(data);
         })

@@ -1,6 +1,5 @@
 import Select from "../elements/Select";
 import FileInput from "../elements/FileInput";
-import { useState } from "react";
 
 export const BundleForm = (props) => {
   return (
@@ -69,19 +68,9 @@ export const BundleForm = (props) => {
       </div>
       <FileInput
         id={"Image"}
-        label={"* Select Image for game"}
+        label={"* Select Image for bundle"}
         onChange={(file) =>
           props.setForm((prevForm) => ({ ...prevForm, Image: file }))
-        }
-      />
-      <FileInput
-        id={"HoverImage"}
-        label={"Select HoverImage for game"}
-        onChange={(file) =>
-          props.setForm((prevForm) => ({
-            ...prevForm,
-            HoverImage: file,
-          }))
         }
       />
       <div class="form-group mb-6 flex items-center">
@@ -153,28 +142,39 @@ export const BundleForm = (props) => {
         defaultText="Select a category"
         label="Select a category for this game"
         onChange={(e) => {
-          props.setForm((prevForm) => ({ ...prevForm, Type: e.target.value }));
+          props.setForm((prevForm) => ({
+            ...prevForm,
+            Category: e.target.options[e.target.selectedIndex].text,
+          }));
         }}
       />
       <Select
         className={"mt-5"}
         variantSelect={true}
         multiselect
+        active
         onChange={(ev) => {
-          props.setForm((prevForm) => ({
-            ...prevForm,
-            GameVariantsId: [...prevForm.GameVariantsId, ev.target.value],
-          }));
-          const variants = [
-            ...props.selectedVariants,
-            {
-              id: parseInt(ev.target.value, 10),
-              text: ev.target.options[ev.target.selectedIndex].text.split(
-                " "
-              )[0],
-            },
-          ];
-          props.setSelectedVariants(variants);
+          if (ev.target.value[0] !== "-") {
+            const variant = props.variants.find(
+              (variant) =>
+                variant.title ===
+                ev.target.options[ev.target.selectedIndex].text.split(" ")[0]
+            );
+            props.setForm((prevForm) => ({
+              ...prevForm,
+              GameVariantsId: [...prevForm.GameVariantsId, variant.id],
+            }));
+            const variants = [
+              ...props.selectedVariants,
+              {
+                id: parseInt(ev.target.value, 10),
+                text: ev.target.options[ev.target.selectedIndex].text.split(
+                  " "
+                )[0],
+              },
+            ];
+            props.setSelectedVariants(variants);
+          }
         }}
         options={props.variants}
         defaultText="Select a category"
@@ -203,8 +203,6 @@ export const BundleForm = (props) => {
                     props.setSelectedVariants((prev) =>
                       prev.splice(variantId, 1)
                     );
-                    const el = document.getElementById("variants");
-                    el.selectedIndex = 0;
                   }}
                 >
                   <path

@@ -18,6 +18,7 @@ const LoginScreen = (props) => {
         sessionStorage.setItem("expiration", data.expiration);
         sessionStorage.setItem("firstName", data.firstName);
         sessionStorage.setItem("lastName", data.lastName);
+        sessionStorage.setItem("isAdmin", data.isAdmin);
         if (data.token) {
           router("/profile");
         }

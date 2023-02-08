@@ -1,13 +1,21 @@
 import axios from "axios";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
-const BasketTable = (props) => {
+const Table = (props) => {
   const token = useAuth();
-  const handleRemoveItem = (id) => {
-    axios.delete("https://localhost:7114/Basket/delete/" + id, {
-      headers: token,
-    });
+  const navigate = useNavigate();
+  const handleRemoveItem = (id, isVariant) => {
+    axios.delete(
+      `https://localhost:7114/${
+        props.isWishlist ? "Wishlist" : "Basket"
+      }/delete/${isVariant ? "variant/" : "bundle/"}` + id,
+      {
+        headers: token,
+      }
+    );
+    navigate(0);
   };
   return (
     <div className="overflow-x-auto relative mt-10">
@@ -29,7 +37,7 @@ const BasketTable = (props) => {
           </tr>
         </thead>
         <tbody>
-          {props.items.map((item, index) => {
+          {props.items.map((item) => {
             if (item.item1) {
               return (
                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -37,6 +45,7 @@ const BasketTable = (props) => {
                     scope="row"
                     className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
+                    <span className="font-bold">Variant:</span>{" "}
                     {item.item1.title || ""}
                   </th>
                   <td className="py-4 px-6">{item.item1.description || ""}</td>
@@ -47,7 +56,7 @@ const BasketTable = (props) => {
                   <td>
                     <button
                       className="bg-red-600 rounded rounded-lg py-2 px-4 text-white"
-                      onClick={() => handleRemoveItem(item.item1.id)}
+                      onClick={() => handleRemoveItem(item.item1.id, true)}
                     >
                       Delete
                     </button>
@@ -61,6 +70,7 @@ const BasketTable = (props) => {
                   scope="row"
                   className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
+                  <span className="font-bold">Bundle:</span>{" "}
                   {item.item2.title || ""}
                 </th>
                 <td className="py-4 px-6">{item.item2.description || ""}</td>
@@ -71,7 +81,7 @@ const BasketTable = (props) => {
                 <td>
                   <button
                     className="bg-red-600 rounded rounded-lg py-2 px-4 text-white"
-                    onClick={() => handleRemoveItem(item.item2.id)}
+                    onClick={() => handleRemoveItem(item.item2.id, false)}
                   >
                     Delete
                   </button>
@@ -85,4 +95,4 @@ const BasketTable = (props) => {
   );
 };
 
-export default BasketTable;
+export default Table;

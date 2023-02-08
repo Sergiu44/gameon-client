@@ -7,9 +7,12 @@ import axios from "axios";
 import GeneralModal from "../../components/modals/GeneralModal";
 import { GameForm } from "../../components/forms/GameForm";
 import { BundleForm } from "../../components/forms/BundleForm";
+import useIsAdmin from "../../hooks/useIsAdmin";
 
 const ListingPageScreen = (props) => {
+  const isAdmin = useIsAdmin();
   const [selectedVariants, setSelectedVariants] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const [variants, setVariants] = useState([]);
   const [priceValue, setPriceValue] = useState(1000);
   const [form, setForm] = useState(
@@ -30,7 +33,6 @@ const ListingPageScreen = (props) => {
           Price: 0,
           Rrp: 0,
           Image: "",
-          HoverImage: "",
           GameVariantsId: [],
         }
   );
@@ -64,7 +66,7 @@ const ListingPageScreen = (props) => {
 
     getCategories();
     getVariants();
-  }, []);
+  }, [props.hasGames]);
 
   const handleOnClick = () => {
     const formData = new FormData();
@@ -76,6 +78,7 @@ const ListingPageScreen = (props) => {
       `https://localhost:7114/${props.hasGames ? "Game" : "Bundle"}/post`,
       formData
     );
+    setShowModal(false);
   };
 
   return (
@@ -87,53 +90,45 @@ const ListingPageScreen = (props) => {
           value={priceValue}
           onChange={(value) => setPriceValue(value)}
         />
-        <button
-          type="button"
-          class="px-6
-      py-2.5
-      bg-blue-600
-      text-white
-      font-medium
-      text-xs
-      leading-tight
-      uppercase
-      rounded
-      shadow-md
-      hover:bg-blue-700 hover:shadow-lg
-      focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-      active:bg-blue-800 active:shadow-lg
-      transition
-      duration-150
-      ease-in-out"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-        >
-          Add {props.hasGames ? "Game" : "Bundle"}
-        </button>
+        {isAdmin && (
+          <button
+            data-modal-target="defaultModal"
+            data-modal-toggle="defaultModal"
+            class="block flex ml-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            type="button"
+            onClick={() => setShowModal(true)}
+          >
+            Add {props.hasGames ? "Game" : "Bundle"}
+          </button>
+        )}
         <GeneralTable
           hasGames={props.hasGames}
           items={products.filter((product) => product.price <= priceValue)}
         />
         {props.hasPagination && <GeneralPagination />}
       </GeneralContainer>
-      <GeneralModal
-        handleOnClick={handleOnClick}
-        title={
-          props.hasGames ? "Add Game to the list" : "Add Bundle to the list"
-        }
-      >
-        {props.hasGames ? (
-          <GameForm setForm={setForm} categories={categories} />
-        ) : (
-          <BundleForm
-            setForm={setForm}
-            categories={categories}
-            variants={variants}
-            selectedVariants={selectedVariants}
-            setSelectedVariants={setSelectedVariants}
-          />
-        )}
-      </GeneralModal>
+      {showModal && (
+        <GeneralModal
+          handleSubmit={handleOnClick}
+          setShowModal={setShowModal}
+          hasGames={props.hasGames}
+          title={
+            props.hasGames ? "Add Game to the list" : "Add Bundle to the list"
+          }
+        >
+          {props.hasGames ? (
+            <GameForm setForm={setForm} categories={categories} />
+          ) : (
+            <BundleForm
+              setForm={setForm}
+              categories={categories}
+              variants={variants}
+              selectedVariants={selectedVariants}
+              setSelectedVariants={setSelectedVariants}
+            />
+          )}
+        </GeneralModal>
+      )}
     </>
   );
 };

@@ -166,7 +166,6 @@ const items = [
 ];
 const GeneralDashboard = () => {
   const location = useLocation();
-  console.log(location);
   const [activeItem, setActiveItem] = useState(
     location.pathname.slice(1, location.pathname.length)
   );

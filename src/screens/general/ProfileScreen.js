@@ -28,7 +28,6 @@ const ProfileScreen = (props) => {
     getUser();
   }, []);
 
-  console.log(user);
   return (
     <>
       <GeneralContainer className="mt-44">

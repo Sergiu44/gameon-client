@@ -1,9 +1,9 @@
 import React from "react";
-import { Link, useNavigate, useNavigation } from "react-router-dom";
-import Select from "../elements/Select";
+import { useNavigate } from "react-router-dom";
 
 const GeneralTable = (props) => {
   const navigate = useNavigate();
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 my-10">
       {props.items.length > 0 &&
@@ -11,7 +11,13 @@ const GeneralTable = (props) => {
           return (
             <div
               key={item.id}
-              onClick={() => navigate(`/game-listing/${item.id}`)}
+              onClick={() =>
+                navigate(
+                  `/${props.hasGames ? "game-listing" : "bundle-listing"}/${
+                    item.id
+                  }`
+                )
+              }
               className={`${
                 index % 2 ? "md:ml-4" : "md:mr-4"
               } overflow-hidden shadow-sm hover:border hover:border-gray-200 mb-8 cursor-pointer hover:shadow-xl`}

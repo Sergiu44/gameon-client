@@ -3,75 +3,35 @@ import React from "react";
 const GeneralModal = (props) => {
   return (
     <div
-      className="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
-      id="exampleModal"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
+      class="relative z-10"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
     >
-      <div className="modal-dialog relative w-auto pointer-events-none">
-        <div className="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-          <div className="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-            <h5
-              className="text-xl font-medium leading-normal text-gray-800"
-              id="exampleModalLabel"
-            >
-              {props.title}
-            </h5>
-            <button
-              type="button"
-              className="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body relative p-4">{props.children}</div>
-          <div className="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-            <button
-              type="button"
-              className="px-6
-          py-2.5
-          bg-purple-600
-          text-white
-          font-medium
-          text-xs
-          leading-tight
-          uppercase
-          rounded
-          shadow-md
-          hover:bg-purple-700 hover:shadow-lg
-          focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0
-          active:bg-purple-800 active:shadow-lg
-          transition
-          duration-150
-          ease-in-out"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button
-              onClick={props.handleOnClick}
-              type="button"
-              className="px-6
-      py-2.5
-      bg-blue-600
-      text-white
-      font-medium
-      text-xs
-      leading-tight
-      uppercase
-      rounded
-      shadow-md
-      hover:bg-blue-700 hover:shadow-lg
-      focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-      active:bg-blue-800 active:shadow-lg
-      transition
-      duration-150
-      ease-in-out
-      ml-1"
-            >
-              Save changes
-            </button>
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+      <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+            <div class="bg-gray-100 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              {props.children}
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+              <button
+                onClick={props.handleSubmit}
+                type="button"
+                class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Update
+              </button>
+              <button
+                onClick={() => props.setShowModal(false)}
+                type="button"
+                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       </div>

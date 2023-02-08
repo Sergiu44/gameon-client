@@ -16,10 +16,6 @@ const RegisterScreen = (props) => {
     type: "",
   });
 
-  useEffect(() => {
-    console.log(form);
-  }, [form]);
-
   const handleSubmitForm = (e) => {
     e.preventDefault();
     axios.post("https://localhost:7114/User/register", {
